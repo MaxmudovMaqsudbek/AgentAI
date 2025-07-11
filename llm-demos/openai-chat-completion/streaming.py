@@ -397,34 +397,61 @@ class HuggingFaceStreamer:
             except Exception as stream_error:
                 logger.warning(f"Streaming failed, using fallback: {stream_error}")
                 
-                # Fallback to non-streaming
-                response = self.client.text_generation(
-                    prompt=prompt,
-                    model=hf_model,
-                    max_new_tokens=config.max_tokens or 512,
-                    temperature=config.temperature,
-                    return_full_text=False
-                )
-                
-                # Simulate streaming by chunking words
-                if isinstance(response, str):
-                    words = response.split()
-                    for i, word in enumerate(words):
-                        content = word + " " if i < len(words) - 1 else word
-                        
+                # Fallback to non-streaming with better error handling
+                try:
+                    response = self.client.text_generation(
+                        prompt=prompt,
+                        model=hf_model,
+                        max_new_tokens=config.max_tokens or 512,
+                        temperature=config.temperature,
+                        return_full_text=False
+                    )
+                    
+                    # Simulate streaming by chunking response
+                    if isinstance(response, str) and response.strip():
+                        words = response.strip().split()
+                        for i, word in enumerate(words):
+                            content = word + (" " if i < len(words) - 1 else "")
+                            
+                            stream_chunk = StreamChunk(
+                                content=content,
+                                timestamp=time.time() - start_time,
+                                chunk_index=i,
+                                provider=StreamProvider.HUGGINGFACE,
+                                model=hf_model,
+                                finish_reason="stop" if i == len(words) - 1 else None
+                            )
+                            
+                            yield stream_chunk
+                            
+                            if config.stream_delay > 0:
+                                time.sleep(config.stream_delay)
+                    else:
+                        # If no response, yield a default response
+                        default_response = "I'm here to help with your questions about the business."
                         stream_chunk = StreamChunk(
-                            content=content,
+                            content=default_response,
                             timestamp=time.time() - start_time,
-                            chunk_index=i,
+                            chunk_index=0,
                             provider=StreamProvider.HUGGINGFACE,
                             model=hf_model,
-                            finish_reason="stop" if i == len(words) - 1 else None
+                            finish_reason="stop"
                         )
-                        
                         yield stream_chunk
                         
-                        if config.stream_delay > 0:
-                            time.sleep(config.stream_delay)
+                except Exception as fallback_error:
+                    logger.error(f"Fallback also failed: {fallback_error}")
+                    # Yield a basic response to prevent StopIteration
+                    basic_response = "I'm having trouble processing that request right now."
+                    stream_chunk = StreamChunk(
+                        content=basic_response,
+                        timestamp=time.time() - start_time,
+                        chunk_index=0,
+                        provider=StreamProvider.HUGGINGFACE,
+                        model=hf_model,
+                        finish_reason="stop"
+                    )
+                    yield stream_chunk
                         
         except Exception as e:
             logger.error(f"Hugging Face streaming failed: {e}")

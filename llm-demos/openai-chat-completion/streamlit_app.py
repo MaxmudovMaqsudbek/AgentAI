@@ -211,32 +211,36 @@ class BusinessKnowledgeBase:
         """Build patterns for intelligent query matching."""
         return {
             "hours": {
-                "keywords": ["hours", "open", "close", "time", "schedule", "when", "operating"],
+                "keywords": ["hours", "open", "close", "time", "schedule", "when", "operating", "business hours", "opening", "closing"],
                 "context": "business hours and schedule"
             },
             "location": {
-                "keywords": ["location", "address", "where", "directions", "map", "office"],
+                "keywords": ["location", "address", "where", "directions", "map", "office", "find", "located", "place"],
                 "context": "business location and address"
             },
             "contact": {
-                "keywords": ["phone", "email", "contact", "call", "reach", "number"],
+                "keywords": ["phone", "email", "contact", "call", "reach", "number", "telephone", "reach", "communicate"],
                 "context": "contact information"
             },
             "services": {
-                "keywords": ["services", "what", "offer", "do", "provide", "solutions", "products"],
+                "keywords": ["services", "what", "offer", "do", "provide", "solutions", "products", "work", "help", "ai", "development"],
                 "context": "services and offerings"
             },
             "team": {
-                "keywords": ["team", "staff", "who", "people", "employees", "founders"],
+                "keywords": ["team", "staff", "who", "people", "employees", "founders", "ceo", "cto", "about"],
                 "context": "team information"
             },
             "support": {
-                "keywords": ["support", "help", "assistance", "problem", "issue", "ticket"],
+                "keywords": ["support", "help", "assistance", "problem", "issue", "ticket", "emergency"],
                 "context": "support and assistance"
             },
             "pricing": {
-                "keywords": ["price", "cost", "pricing", "fee", "rates", "budget"],
+                "keywords": ["price", "cost", "pricing", "fee", "rates", "budget", "expensive", "cheap", "money"],
                 "context": "pricing information"
+            },
+            "general": {
+                "keywords": ["hello", "hi", "hey", "what", "who", "company", "business", "about"],
+                "context": "general information"
             }
         }
     
@@ -418,30 +422,28 @@ class BusinessAIAssistant:
         # Search knowledge base
         knowledge_matches = self.knowledge_base.search_knowledge(query)
         
-        # Determine if AI assistance is needed
-        if use_ai and self.ai_available and knowledge_matches:
-            ai_response = self._get_ai_response(query, knowledge_matches)
-            return {
-                "type": "ai_enhanced",
-                "response": ai_response,
-                "knowledge_matches": knowledge_matches,
-                "confidence": "high"
-            }
-        elif knowledge_matches:
-            structured_response = self._create_structured_response(knowledge_matches)
-            return {
-                "type": "knowledge_base",
-                "response": structured_response,
-                "knowledge_matches": knowledge_matches,
-                "confidence": "medium"
-            }
-        else:
-            return {
-                "type": "unknown",
-                "response": "I don't have specific information about that. Would you like to create a support ticket for assistance?",
-                "knowledge_matches": {},
-                "confidence": "low"
-            }
+        # Always try to provide a helpful response
+        if use_ai and self.ai_available:
+            try:
+                ai_response = self._get_ai_response(query, knowledge_matches)
+                return {
+                    "type": "ai_enhanced",
+                    "response": ai_response,
+                    "knowledge_matches": knowledge_matches,
+                    "confidence": "high"
+                }
+            except Exception as e:
+                # Fall back to enhanced response
+                pass
+        
+        # Use enhanced response logic
+        enhanced_response = self._create_enhanced_response(query, knowledge_matches)
+        return {
+            "type": "enhanced",
+            "response": enhanced_response,
+            "knowledge_matches": knowledge_matches,
+            "confidence": "medium" if knowledge_matches else "low"
+        }
     
     def _get_ai_response(self, query: str, knowledge_matches: Dict) -> str:
         """Get AI-enhanced response using streaming system."""
@@ -449,21 +451,22 @@ class BusinessAIAssistant:
             # Create context-aware prompt
             business_context = self.knowledge_base.generate_business_context()
             
-            # Prepare AI messages
+            # Prepare AI messages with more specific instructions
             messages = [
                 {
                     "role": "system",
-                    "content": f"""You are a professional business assistant for {BUSINESS_INFO['company_name']}. 
+                    "content": f"""You are a helpful business assistant for {BUSINESS_INFO['company_name']}. 
                     
 Business Information:
 {business_context}
 
 Instructions:
-- Provide accurate, helpful information about the business
-- Be professional and friendly
-- If you don't have specific information, acknowledge it and suggest contacting support
-- Keep responses concise but comprehensive
-- Use business hours, contact info, and services from the provided context"""
+- Always provide helpful responses based on the business information above
+- Be professional, friendly, and informative
+- Use the business hours, contact info, location, and services from the context
+- If asked about something not in the business info, acknowledge it politely and suggest contacting support
+- Keep responses conversational but informative
+- Always try to be helpful even for general questions"""
                 },
                 {
                     "role": "user",
@@ -471,23 +474,59 @@ Instructions:
                 }
             ]
             
-            # Use the first available provider
-            if self.streaming_system.streamers:
+            # Use streaming system for AI response
+            if self.streaming_system and hasattr(self.streaming_system, 'streamers') and self.streaming_system.streamers:
                 provider = list(self.streaming_system.streamers.keys())[0]
                 config = StreamingConfig(
-                    model="gpt-4o" if provider.value == "openai" else "gemini-1.5-flash",
+                    model="gemini-1.5-flash",
                     temperature=0.3,
-                    max_tokens=500
+                    max_tokens=500,
+                    show_timing=False
                 )
                 
-                response = self.streaming_system.stream_with_display(messages, provider, config)
-                return response.content
+                # Use a simpler streaming approach for Streamlit
+                streamer = self.streaming_system.streamers[provider]
+                content_parts = []
+                
+                for chunk in streamer.stream_completion(messages, config):
+                    content_parts.append(chunk.content)
+                
+                full_response = ''.join(content_parts)
+                if full_response.strip():
+                    return full_response.strip()
             
         except Exception as e:
-            st.warning(f"AI response error: {e}")
+            # Log the error but don't show to user
+            import logging
+            logging.warning(f"AI response error: {e}")
         
-        # Fallback to structured response
-        return self._create_structured_response(knowledge_matches)
+        # Enhanced fallback response
+        return self._create_enhanced_response(query, knowledge_matches)
+    
+    def _create_enhanced_response(self, query: str, knowledge_matches: Dict) -> str:
+        """Create enhanced response with better query understanding."""
+        query_lower = query.lower()
+        
+        # Always try to provide helpful information
+        if knowledge_matches:
+            return self._create_structured_response(knowledge_matches)
+        
+        # Smart fallback responses based on query patterns
+        if any(word in query_lower for word in ['hello', 'hi', 'hey', 'greetings']):
+            return f"Hello! Welcome to {BUSINESS_INFO['company_name']}. How can I help you today? You can ask about our business hours, location, services, or contact information."
+        
+        elif any(word in query_lower for word in ['help', 'assist', 'support']):
+            return f"I'm here to help! I can provide information about {BUSINESS_INFO['company_name']} including:\n\n• 🕐 Business hours and schedule\n• 📍 Location and directions\n• 💼 Services and offerings\n• 📞 Contact information\n• 👥 Our team\n\nWhat would you like to know?"
+        
+        elif any(word in query_lower for word in ['who', 'what', 'company', 'business']):
+            return f"**About {BUSINESS_INFO['company_name']}**\n\n{BUSINESS_INFO['description']}\n\n📍 **Location:** {BUSINESS_INFO['location']['city']}, {BUSINESS_INFO['location']['state']}\n📞 **Phone:** {BUSINESS_INFO['contact']['phone']}\n📧 **Email:** {BUSINESS_INFO['contact']['email']}\n\nWould you like to know more about our services or how to contact us?"
+        
+        elif any(word in query_lower for word in ['thank', 'thanks']):
+            return f"You're welcome! Is there anything else you'd like to know about {BUSINESS_INFO['company_name']}? I'm here to help with information about our services, hours, location, or anything else!"
+        
+        else:
+            # General helpful response
+            return f"I'd be happy to help you with information about {BUSINESS_INFO['company_name']}! While I don't have specific information about '{query}', I can help you with:\n\n• 🕐 **Business Hours:** When we're open\n• 📍 **Location:** Where to find us\n• 💼 **Services:** What we offer\n• 📞 **Contact:** How to reach us\n• 👥 **Team:** Who we are\n\nWhat would you like to know more about?"
     
     def _create_structured_response(self, knowledge_matches: Dict) -> str:
         """Create structured response from knowledge base matches."""

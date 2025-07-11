@@ -1,0 +1,21 @@
+{
+  "content": "I'm having trouble processing that request right now.",
+  "provider": "huggingface",
+  "model": "gpt-4o",
+  "total_time": 0.6099896430969238,
+  "first_chunk_time": 0.6091222763061523,
+  "average_chunk_time": 0.6099896430969238,
+  "total_chunks": 1,
+  "characters_per_second": 86.88672111040843,
+  "words_per_second": 13.114976771382405,
+  "chunks": [
+    {
+      "content": "I'm having trouble processing that request right now.",
+      "timestamp": 0.6091222763061523,
+      "chunk_index": 0,
+      "provider": "huggingface",
+      "model": "microsoft/DialoGPT-large",
+      "finish_reason": "stop"
+    }
+  ]
+}
