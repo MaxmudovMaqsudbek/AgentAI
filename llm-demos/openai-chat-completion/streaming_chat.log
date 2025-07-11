@@ -1,0 +1,49 @@
+2025-07-11 22:55:31,234 - __main__ - WARNING - OpenAI streamer not available: OpenAI API key not found. Set OPENAI_API_KEY environment variable.
+2025-07-11 22:55:31,235 - __main__ - WARNING - Gemini streamer not available: Google API key not found. Set GOOGLE_API_KEY environment variable.
+2025-07-11 22:55:31,235 - __main__ - ERROR - Demo failed: No streaming providers available. Please set API keys.
+2025-07-11 22:58:05,961 - __main__ - ERROR - Demo failed: 'AdvancedStreamingSystem' object has no attribute '_load_environment_variables'
+2025-07-11 23:17:02,137 - __main__ - INFO - Loaded environment variables from: .env
+2025-07-11 23:17:02,138 - __main__ - INFO - Available environment variables: ['GOOGLE_API_KEY', 'HUGGINGFACE_API_KEY']
+2025-07-11 23:17:02,138 - __main__ - WARNING - OpenAI streamer not available: OpenAI API key not found. Set OPENAI_API_KEY environment variable.
+2025-07-11 23:17:02,139 - __main__ - INFO - Gemini streaming client initialized
+2025-07-11 23:17:02,139 - __main__ - INFO - Hugging Face streaming client initialized
+2025-07-11 23:17:02,139 - __main__ - INFO - Streaming system initialized with providers: [<StreamProvider.GEMINI: 'gemini'>, <StreamProvider.HUGGINGFACE: 'huggingface'>]
+2025-07-11 23:17:02,141 - __main__ - INFO - Started Gemini streaming: gemini-pro
+2025-07-11 23:17:03,147 - __main__ - ERROR - Gemini streaming failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-07-11 23:17:03,147 - __main__ - ERROR - Streaming failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-07-11 23:17:03,148 - __main__ - ERROR - Provider StreamProvider.GEMINI failed: 404 models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-07-11 23:17:03,150 - __main__ - INFO - Started Hugging Face streaming: microsoft/DialoGPT-large
+2025-07-11 23:17:03,834 - __main__ - WARNING - Streaming failed, using fallback: 
+2025-07-11 23:17:03,835 - __main__ - ERROR - Hugging Face streaming failed: 
+2025-07-11 23:17:03,835 - __main__ - ERROR - Streaming failed: generator raised StopIteration
+2025-07-11 23:17:03,836 - __main__ - ERROR - Provider StreamProvider.HUGGINGFACE failed: generator raised StopIteration
+2025-07-11 23:35:48,112 - __main__ - INFO - Loaded environment variables from: .env
+2025-07-11 23:35:48,113 - __main__ - INFO - Available environment variables: ['GOOGLE_API_KEY', 'HUGGINGFACE_API_KEY']
+2025-07-11 23:35:48,113 - __main__ - WARNING - OpenAI streamer not available: OpenAI API key not found. Set OPENAI_API_KEY environment variable.
+2025-07-11 23:35:48,114 - __main__ - INFO - Gemini streaming client initialized
+2025-07-11 23:35:48,114 - __main__ - INFO - Hugging Face streaming client initialized
+2025-07-11 23:35:48,114 - __main__ - INFO - Streaming system initialized with providers: [<StreamProvider.GEMINI: 'gemini'>, <StreamProvider.HUGGINGFACE: 'huggingface'>]
+2025-07-11 23:35:48,116 - __main__ - INFO - Started Gemini streaming: gemini-1.5-flash
+2025-07-11 23:37:19,809 - __main__ - INFO - Started Hugging Face streaming: microsoft/DialoGPT-large
+2025-07-11 23:37:20,274 - __main__ - WARNING - Streaming failed, using fallback: 
+2025-07-11 23:37:20,275 - __main__ - ERROR - Hugging Face streaming failed: 
+2025-07-11 23:37:20,275 - __main__ - ERROR - Streaming failed: generator raised StopIteration
+2025-07-11 23:37:20,276 - __main__ - ERROR - Provider StreamProvider.HUGGINGFACE failed: generator raised StopIteration
+2025-07-11 23:39:05,162 - streaming - INFO - Loaded environment variables from: .env
+2025-07-11 23:39:05,163 - streaming - INFO - Available environment variables: ['GOOGLE_API_KEY', 'HUGGINGFACE_API_KEY']
+2025-07-11 23:39:05,163 - streaming - WARNING - OpenAI streamer not available: OpenAI API key not found. Set OPENAI_API_KEY environment variable.
+2025-07-11 23:39:05,163 - streaming - INFO - Gemini streaming client initialized
+2025-07-11 23:39:05,163 - streaming - INFO - Hugging Face streaming client initialized
+2025-07-11 23:39:05,163 - streaming - INFO - Streaming system initialized with providers: [<StreamProvider.GEMINI: 'gemini'>, <StreamProvider.HUGGINGFACE: 'huggingface'>]
+2025-07-11 23:39:05,165 - streaming - INFO - Started Gemini streaming: gemini-1.5-flash
+2025-07-11 23:43:14,422 - streaming - INFO - Loaded environment variables from: .env
+2025-07-11 23:43:14,422 - streaming - INFO - Available environment variables: ['GOOGLE_API_KEY', 'HUGGINGFACE_API_KEY']
+2025-07-11 23:43:14,423 - streaming - WARNING - OpenAI streamer not available: OpenAI API key not found. Set OPENAI_API_KEY environment variable.
+2025-07-11 23:43:14,423 - streaming - INFO - Gemini streaming client initialized
+2025-07-11 23:43:14,424 - streaming - INFO - Hugging Face streaming client initialized
+2025-07-11 23:43:14,424 - streaming - INFO - Streaming system initialized with providers: [<StreamProvider.GEMINI: 'gemini'>, <StreamProvider.HUGGINGFACE: 'huggingface'>]
+2025-07-11 23:43:14,426 - streaming - INFO - Started Gemini streaming: gemini-1.5-flash
+2025-07-11 23:47:28,845 - streaming - INFO - Started Hugging Face streaming: microsoft/DialoGPT-large
+2025-07-11 23:47:29,729 - streaming - WARNING - Streaming failed, using fallback: 
+2025-07-11 23:47:29,730 - streaming - ERROR - Hugging Face streaming failed: 
+2025-07-11 23:47:29,730 - streaming - ERROR - Streaming failed: generator raised StopIteration

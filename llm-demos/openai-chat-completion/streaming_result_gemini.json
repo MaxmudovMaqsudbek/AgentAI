@@ -1,0 +1,45 @@
+{
+  "content": "1. George Washington\n2. John Adams\n3. Thomas Jefferson\n4. James Madison\n5. James Monroe\n6. John Quincy Adams\n7. Andrew Jackson\n8. Martin Van Buren\n9. William Henry Harrison\n10. John Tyler\n",
+  "provider": "gemini",
+  "model": "gpt-4o",
+  "total_time": 91.6871428489685,
+  "first_chunk_time": 91.68190240859985,
+  "average_chunk_time": 22.921785712242126,
+  "total_chunks": 4,
+  "characters_per_second": 2.050451068255913,
+  "words_per_second": 0.3599196024066231,
+  "chunks": [
+    {
+      "content": "1",
+      "timestamp": 91.68190240859985,
+      "chunk_index": 0,
+      "provider": "gemini",
+      "model": "gemini-1.5-flash",
+      "finish_reason": null
+    },
+    {
+      "content": ". George Washington\n2. John Adams\n3. Thomas Jefferson\n4.",
+      "timestamp": 91.68343448638916,
+      "chunk_index": 1,
+      "provider": "gemini",
+      "model": "gemini-1.5-flash",
+      "finish_reason": null
+    },
+    {
+      "content": " James Madison\n5. James Monroe\n6. John Quincy Adams\n7.",
+      "timestamp": 91.68480920791626,
+      "chunk_index": 2,
+      "provider": "gemini",
+      "model": "gemini-1.5-flash",
+      "finish_reason": null
+    },
+    {
+      "content": " Andrew Jackson\n8. Martin Van Buren\n9. William Henry Harrison\n10. John Tyler\n",
+      "timestamp": 91.68578624725342,
+      "chunk_index": 3,
+      "provider": "gemini",
+      "model": "gemini-1.5-flash",
+      "finish_reason": null
+    }
+  ]
+}
